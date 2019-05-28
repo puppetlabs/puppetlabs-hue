@@ -1,10 +1,10 @@
 {
-  "name": "davidarmstrong-hue_rsapi",
+  "name": "puppetlabs-hue",
   "version": "0.1.0",
-  "author": "David Armstrong <david.armstrong@puppet.com>",
-  "summary": "",
+  "author": "David Armstrong <david.armstrong@puppet.com> and others",
+  "summary": "Manage Philips HUE lights",
   "license": "Apache-2.0",
-  "source": "",
+  "source": "https://github.com/puppetlabs/puppetlabs-hue",
   "dependencies": [
 
   ],
