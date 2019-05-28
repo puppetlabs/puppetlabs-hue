@@ -40,27 +40,27 @@ type philips_hue
 url file:////etc/puppetlabs/puppet/devices/homehub.conf
 ```
 
-Next, create a credentials file containing a host and key as shown below, with the port value being optional and defaulting to 80 if not set. For more detailed information on the credentials file please see the files [schema](./lib/puppet/transport/schema/philips_hue.rb). See the [HOCON documentation](https://github.com/lightbend/config/blob/master/HOCON.md) for information on quoted/unquoted strings and connecting the device.
+Next, create a credentials file containing a host and key as shown below, with the port value being optional and defaulting to 80 if not set. For more detailed information on the credentials file please see the [schema](./lib/puppet/transport/schema/philips_hue.rb). See the [HOCON documentation](https://github.com/lightbend/config/blob/master/HOCON.md) for information on quoted/unquoted strings.
 
-  ```
-  host: 10.0.10.1
-  key:  onmdTvd198bMrC6QYyVE9iasfYSeyAbAj3XyQzfL
-  port: 80
-  ```
+```
+host: 10.0.10.1
+key:  onmdTvd198bMrC6QYyVE9iasfYSeyAbAj3XyQzfL
+port: 80
+```
 
-To obtain an API key for the device follow the steps here: [http://www.developers.meethue.com/documentation/getting-started](http://www.developers.meethue.com/documentation/getting-started)
+To obtain an API key for the device follow the steps on the [HUE Developer Site](http://www.developers.meethue.com/documentation/getting-started).
 
 Test your setup and get the certificate signed:
 
-`puppet device --verbose --target homehub`
+```puppet device --verbose --target homehub```
 
-This will sign the certificate and set up the device for Puppet.
+This will request a certificate and set up the device for Puppet.
 
-See the [`puppet device` documentation](https://puppet.com/docs/puppet/5.5/puppet_device.html)
+See the [`puppet device` documentation](https://puppet.com/docs/puppet/latest/puppet_device.html) for more options. See [Puppet CA](https://puppet.com/docs/puppet/latest/ssl_certificates.html) for signing the certificate on your puppet master.
 
 ## Usage
 
-Now you can manage your hue_light resources, See: [REFERENCE.md](https://github.com/da-ar/hue_rsapi/blob/master/REFERENCE.md).
+Now you can manage your `hue_light` resources. See the REFERENCE for
 
 ### Puppet Device
 
@@ -89,30 +89,37 @@ This will apply the manifest. Puppet will check if light is already configured w
 
 Note that if you get errors, run the above commands with `--verbose` - this will give you error message output.
 
-## Development
 
-If you do not have an active Philips Hue system handy when developing you may find the [Hue-Emulator](https://github.com/SteveyO/Hue-Emulator) tool to be of use as it will allow you to test your changes without having an actual system in place. The tool is written in java and several differnt versions are provided as .jar files. In order to launch the emulator, you simply enter the following command into your terminal:
-```
-java -jar ./spec/fixtures/HueEmulator-v0.8.jar
-```
-Once it is running and before pressing start be sure to set the port. This can be set to whichever port that you wish, but it is advised to utilise port number `80` as it is the default port used by the module and the one that is advised by the emulator itself.
-
-### Testing
-
-#### Unit Testing
+## Unit Testing
 
 Unit tests test the parsing and command generation logic, executed locally.
 
-First execute `bundle exec rake spec_prep` to ensure that the local types are made available to the spec tests. Then execute with `bundle exec rake spec`.
+Use the PDK to run the tests:
 
-Local testing can be carried out by running:
-
-To retrieve:
 ```
-bundle exec puppet device --verbose --debug --trace --modulepath spec/fixtures/modules --target=homehub --deviceconfig spec/fixtures/device.conf --resource hue_light
+pdk test unit
 ```
 
-To set:
+## Local Development
+
+If you do not have a Philips Hue system handy when developing you may find the [Hue-Emulator](https://github.com/SteveyO/Hue-Emulator) tool useful. Use the emulator instead of a real system to test your changes. The tool is written in java. Download the latest version from github and launch the emulator, with the following command:
+
 ```
-bundle exec puppet device --verbose --debug --trace --modulepath spec/fixtures/modules --target=homehub --deviceconfig spec/fixtures/device.conf --apply examples/hue_disco.pp
+java -jar ./spec/fixtures/HueEmulator-v0.8.jar
+```
+
+Set the port to a number available on your system (usually the default `8000` is fine), then press "Start".
+
+Have a look at the conf files in `spec/fixtures` and adjust to your local environment.
+
+Once you have set everything up, use the following commands as examples to get you going:
+
+To list available lights:
+```
+pdk bundle exec puppet device --verbose --debug --trace --modulepath spec/fixtures/modules --target=emulatorhub --deviceconfig spec/fixtures/device.conf --resource hue_light
+```
+
+To manage values of the lights:
+```
+pdk bundle exec puppet device --verbose --debug --trace --modulepath spec/fixtures/modules --target=emulatorhub --deviceconfig spec/fixtures/device.conf --apply examples/traffic_lights.pp
 ```
