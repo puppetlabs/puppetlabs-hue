@@ -11,5 +11,7 @@ spec/spec_helper.rb:
 Rakefile:
   requires:
     - 'puppet-strings/tasks'
+appveyor.yml:
+  simplecov: true
 .travis.yml:
   simplecov: true
